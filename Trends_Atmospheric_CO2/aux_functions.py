@@ -68,6 +68,7 @@ def plotLine(df, df_label: str=None, title: str="Gráfico de Linha", xlabel: str
     if compare is not None:
         plt.plot(compare, label=compare_label, linestyle='--')
     if xlabel is not None:
+        plt.xlabel(xlabel)
     if ylabel is not None:
         plt.ylabel(ylabel)
     if df_label or compare_label:
