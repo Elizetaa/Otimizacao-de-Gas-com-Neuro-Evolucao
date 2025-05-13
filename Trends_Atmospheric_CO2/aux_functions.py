@@ -5,10 +5,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import statsmodels.api as sm
 import pmdarima as pm
+import numpy as np
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.stattools import adfuller
 from scipy.stats import zscore
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
 ##################################################################################
 # Nota Pessoal: Atualizar as funções utilizando Plotly para gráficos interativos #
@@ -47,17 +50,30 @@ def plotHistogram(data, title=None, xlabel=None, ylabel=None):
     plt.show()
     
     
-def plotLine(df, df_label=None, title: str="Gráfico de Linha", xlabel=None, ylabel=None, compare=None, compare_label=None):
+def plotLine(df, df_label: str=None, title: str="Gráfico de Linha", xlabel: str=None, ylabel: str=None, compare=None, compare_label: str=None):
+    """
+    Plota um gráfico de linha com os dados fornecidos.
+    Parâmetros:
+    - df: pd.Series ou pd.DataFrame com os dados a serem plotados.
+    - df_label: rótulo para a série de dados.
+    - title: título do gráfico.
+    - xlabel: rótulo do eixo x.
+    - ylabel: rótulo do eixo y.
+    - compare: pd.Series ou pd.DataFrame com dados adicionais para comparação.
+    - compare_label: rótulo para a série de comparação.
+    """
     plt.figure(figsize=(LARGURA, ALTURA))
     plt.plot(df, label=df_label, linestyle='-')
+    plt.title(title)
     if compare is not None:
         plt.plot(compare, label=compare_label, linestyle='--')
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.legend()
+    if xlabel is not None:
+    if ylabel is not None:
+        plt.ylabel(ylabel)
+    if df_label or compare_label:
+        plt.legend()
     plt.show()
-    
+
     
 def plotBoxplot(data, title=None, xlabel=None, ylabel=None):
     plt.figure(figsize=(LARGURA, ALTURA))
@@ -139,6 +155,89 @@ def plotPartialAutoCorrelation(data, lags=50):
     plot_pacf(data, ax=plt.gca(), lags=lags)
     plt.title('Função de Autocorrelação Parcial (PACF)')
     plt.show()
+
+
+def differecing(series: pd.Series, lag: int = 1) -> tuple:
+    """
+    Reverte a diferenciação de primeira ordem usando cumsum.
+    
+    Parâmetros:
+    - df_diff (np.ndarray, list ou pd.Series): Valores previstos após diferenciação
+    - first_value (float): Primeiro valor real antes da diferenciação
+    - index (pd.Index): Índice desejado para a série reconstruída (opcional)
+
+    Retorna:
+    - pd.Series: Valores reconstituídos na escala original
+    """
+    df_diff = series.diff(lag).dropna()
+    first_value = series.iloc[lag - 1]
+    return df_diff, first_value
+
+
+def inverseDifferecing(df_diff: pd.Series, first_value: float) -> pd.Series:
+    """
+    Reverte a diferenciação de primeira ordem.
+    
+    Parâmetros:
+    - df_diff (np.array ou list): Valores previstos após diferenciação
+    - first_value (float): Primeiro valor real antes da diferenciação
+    
+    Retorna:
+    - forecast_original (list): Valores reconstruídos na escala original
+    """
+    # Converter entrada para numpy array
+    if isinstance(df_diff, pd.Series):
+        values = df_diff.values
+        if index is None:
+            index = df_diff.index
+    else:
+        values = np.array(df_diff)
+
+    # Reverter diferenciação
+    original_values = first_value + np.cumsum(values)
+
+    # Criar Series com índice, se disponível
+    return pd.Series(original_values, index=index)
+
+
+def minmaxScaler(series: pd.Series) -> tuple[pd.Series, MinMaxScaler]:
+    """
+    Normaliza os dados para o intervalo [0, 1].
+    Retorna a série normalizada e o objeto scaler.
+    """
+    scaler = MinMaxScaler()
+    scaled_values = scaler.fit_transform(series.values.reshape(-1, 1))
+    scaled_series = pd.Series(scaled_values.flatten(), index=series.index)
+    return scaled_series, scaler
+
+
+def inverseMinmax(normalized_series: pd.Series, scaler: MinMaxScaler) -> pd.Series:
+    """
+    Inverte a normalização MinMax.
+    Retorna a série original.
+    """
+    original_values = scaler.inverse_transform(normalized_series.values.reshape(-1, 1))
+    return pd.Series(original_values.flatten(), index=normalized_series.index)
+
+
+def standardScaler(series: pd.Series) -> tuple[pd.Series, StandardScaler]:
+    """
+    Normaliza os dados para ter média 0 e desvio padrão 1.
+    Retorna a série normalizada e o objeto scaler.
+    """
+    scaler = StandardScaler()
+    scaled_values = scaler.fit_transform(series.values.reshape(-1, 1))
+    scaled_series = pd.Series(scaled_values.flatten(), index=series.index)
+    return scaled_series, scaler
+
+
+def inverseStandard(normalized_series: pd.Series, scaler: StandardScaler) -> pd.Series:
+    """
+    Inverte a normalização Standard.
+    Retorna a série original.
+    """
+    original_values = scaler.inverse_transform(normalized_series.values.reshape(-1, 1))
+    return pd.Series(original_values.flatten(), index=normalized_series.index)
 
 
 def adfullerTest(data):
