@@ -11,10 +11,6 @@ __pycache__
 *.log
 *.pot
 
-# Banco de dados locais
-*.db
-*.sqlite3
-
 # Pastas de IDEs
 .idea/
 .vscode/
