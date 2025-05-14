@@ -1,0 +1,20 @@
+# Diretórios de ambiente virtual
+.venv/
+env/
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos sensíveis ou temporários
+.env
+*.log
+*.pot
+
+# Banco de dados locais
+*.db
+*.sqlite3
+
+# Pastas de IDEs
+.idea/
+.vscode/

@@ -41,6 +41,15 @@ def ler_csv(caminho_arquivo:str, average_only:bool=False):
         
     return dataSet
 
+def criarJanelas(data:np.array or pd.array, window_size: int=12):
+    X = []
+    y = []
+    for i in range(len(data) - window_size):
+        X.append(data[i:(i + window_size)])
+        y.append(data[i + window_size])
+    return np.array(X), np.array(y)
+
+
 def plotHistogram(data, title=None, xlabel=None, ylabel=None):
     plt.figure(figsize=(LARGURA, ALTURA))
     sns.histplot(data, kde=True)
