@@ -59,7 +59,7 @@ def plotHistogram(data, title=None, xlabel=None, ylabel=None):
     plt.show()
     
     
-def plotLine(df, df_label: str=None, title: str="Gráfico de Linha", xlabel: str=None, ylabel: str=None, compare=None, compare_label: str=None):
+def plotLine(df, df_label: str=None, df_marker='none', df_linestyle='-', title: str="Gráfico de Linha", xlabel: str=None, ylabel: str=None, compare=None, compare_label: str=None, compare_marker='none', compare_linestyle='--'):
     """
     Plota um gráfico de linha com os dados fornecidos.
     Parâmetros:
@@ -72,10 +72,10 @@ def plotLine(df, df_label: str=None, title: str="Gráfico de Linha", xlabel: str
     - compare_label: rótulo para a série de comparação.
     """
     plt.figure(figsize=(LARGURA, ALTURA))
-    plt.plot(df, label=df_label, linestyle='-')
+    plt.plot(df, label=df_label, linestyle=df_linestyle, marker=df_marker)
     plt.title(title)
     if compare is not None:
-        plt.plot(compare, label=compare_label, linestyle='--')
+        plt.plot(compare, label=compare_label, linestyle=compare_linestyle, marker=compare_marker)
     if xlabel is not None:
         plt.xlabel(xlabel)
     if ylabel is not None:
