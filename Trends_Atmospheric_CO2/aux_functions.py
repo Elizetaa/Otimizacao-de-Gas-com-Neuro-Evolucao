@@ -4,7 +4,7 @@ import scipy.stats as stats
 import matplotlib.pyplot as plt
 import seaborn as sns
 import statsmodels.api as sm
-import pmdarima as pm
+# import pmdarima as pm
 import numpy as np
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.seasonal import seasonal_decompose
@@ -329,13 +329,13 @@ def detectar_outliers_zscore(series: pd.Series, limite: float = 2.5, true_only: 
         return outliers
 
 
-def auto_arima(data: pd.Series, m: int = 12):
-    model = pm.auto_arima(data.dropna(),
-                        seasonal=True,
-                        m=m,
-                        trace=True,
-                        error_action='ignore',
-                        suppress_warnings=True,
-                        stepwise=True
-                        )
-    print(model.summary())
+# def auto_arima(data: pd.Series, m: int = 12):
+#     model = pm.auto_arima(data.dropna(),
+#                         seasonal=True,
+#                         m=m,
+#                         trace=True,
+#                         error_action='ignore',
+#                         suppress_warnings=True,
+#                         stepwise=True
+#                         )
+#     print(model.summary())
