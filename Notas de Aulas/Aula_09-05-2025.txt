@@ -1,8 +1,0 @@
-Análisar o que é importante na resolução da problemática
-
-DNA = Jeito de codigicar a solução, sua representação, comportameto, etc. Ela deve gerar ao menos uma solução
-
-Chromossomos pedaçõs de DNA, algo parecido com um parâmetro de um DNA ou trecho de código que é importante para o DNA
-
-
-
